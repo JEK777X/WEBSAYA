@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login dan Pembayaran Otomatis</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            background-image: url('https://i.imgur.com/r9ndrtG.jpeg');
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            flex-direction: column;
+        }
+        #loginDiv, #mainDiv {
+            width: 100%;
+            max-width: 400px;
+        }
+        #loginDiv h1 {
+            color: #FFD700;
+            text-shadow: 1px 1px 2px #000;
+        }
+        input[type="text"], input[type="password"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #333;
+            color: #FFD700;
+            border: 1px solid #FFD700;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+        input::placeholder {
+            color: #FFD700;
+        }
+        button {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            color: #000;
+            background-color: #FFD700;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #mainDiv {
+            display: none;
+        }
+        #result p {
+            margin: 10px 0;
+            color: #FFD700;
+            font-size: 16px;
+        }
+    </style>
+    <script>
+        const infullTypeConfigs = [
+            { "infullType": 14, "displayName": "DANA", "group": "ewallet" },
+            { "infullType": 13, "displayName": "OVO", "group": "ewallet" },
+            { "infullType": 8, "displayName": "GOPAY", "group": "ewallet" },
+            { "infullType": 22, "displayName": "SHOPEEPAY", "group": "ewallet" },
+            { "infullType": 40, "displayName": "QRIS", "group": "ewallet" }
+        ];
+
+        function login() {
+            const username = atob('YWRtaW4='); // 'admin' encoded in base64
+            const password = atob('Nzc3Nw=='); // '77777' encoded in base64
+            const inputUsername = document.getElementById('username').value;
+            const inputPassword = document.getElementById('password').value;
+
+            if (inputUsername === username && inputPassword === password) {
+                document.getElementById('loginDiv').style.display = 'none';
+                document.getElementById('mainDiv').style.display = 'block';
+                populateInfullTypeOptions();
+            } else {
+                alert('Username atau password salah!');
+            }
+        }
+
+        function populateInfullTypeOptions() {
+            const select = document.getElementById('infullTypeSelect');
+            infullTypeConfigs.forEach(config => {
+                const option = document.createElement('option');
+                option.value = config.infullType;
+                option.textContent = `${config.displayName} (${config.group})`;
+                select.appendChild(option);
+            });
+        }
+
+        function processPayment() {
+            const userIds = document.getElementById('userIds').value.split('\n').filter(id => id.trim() !== '');
+            const selectedOption = document.getElementById('coin').value;
+            const selectedInfullType = document.getElementById('infullTypeSelect').value;
+
+            if (userIds.length === 0) {
+                alert('Harap masukkan ID terlebih dahulu.');
+                return;
+            }
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = ''; // Clear previous results
+
+            userIds.forEach(userId => {
+                const paymentMessage = `Pembayaran untuk ID ${userId.trim()} sedang diproses menggunakan layanan ${selectedInfullType}.`;
+                resultDiv.innerHTML += `<p>${paymentMessage}</p>`;
+            });
+
+            alert('Pembayaran berhasil diproses untuk semua ID yang dimasukkan!');
+        }
+    </script>
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="loginDiv">
+        <h1>Login Admin</h1>
+        <input type="text" id="username" placeholder="Masukkan Username">
+        <input type="password" id="password" placeholder="Masukkan Password">
+        <button onclick="login()">Login</button>
+    </div>
+
+    <!-- Main Content Section -->
+    <div id="mainDiv">
+        <h1>Pembayaran Otomatis</h1>
+        <p>Masukkan satu atau beberapa ID pengguna (pisahkan dengan enter):</p>
+        <textarea id="userIds" placeholder="Contoh: 12345\n67890"></textarea>
+        <p>Pilih Paket:</p>
+        <select id="coin">
+            <option value="com.neptune.domino.sc.coincard0099">Topup 3k 30m</option>
+            <option value="com.neptune.domino.sc.coincard00099">Topup 10k Limit 2B</option>
+            <option value="com.neptune.domino.coincard0066">Topup 10k 60m Coin</option>
+            <option value="com.neptune.domino.coincard0199">Topup 30k 200m Coin</option>
+        </select>
+        <p>Pilih Metode Pembayaran:</p>
+        <select id="infullTypeSelect">
+            <!-- Options will be populated dynamically -->
+        </select>
+        <button onclick="processPayment()">Proses Pembayaran</button>
+        <div id="result"></div>
+    </div>
+</body>
+</html>
