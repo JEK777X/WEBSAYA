@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login dan Pembayaran Otomatis</title>
+    <title>Login dan Buat Tautan</title>
     <style>
         body {
             background-color: #000;
@@ -22,7 +22,7 @@
             width: 100%;
             max-width: 400px;
         }
-        #loginDiv h1, #mainDiv h1 {
+        #loginDiv h1 {
             color: #FFD700;
             text-shadow: 1px 1px 2px #000;
         }
@@ -53,48 +53,84 @@
         #mainDiv {
             display: none;
         }
-        #result {
-            margin-top: 20px;
-            text-align: left;
+        #result a {
+            color: #000;
+            text-decoration: none;
+            font-weight: bold;
+            text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+            border-bottom: 2px solid #fff;
+        }
+        h1, p {
+            font-family: 'Arial Black', Gadget, sans-serif;
         }
         #result p {
             margin: 10px 0;
         }
     </style>
     <script>
+        const infullTypeConfigs = [
+            {"infullType": 14, "displayName": "DANA", "group": "ewallet"},
+            {"infullType": 13, "displayName": "OVO", "group": "ewallet"},
+            {"infullType": 8, "displayName": "GOPAY", "group": "ewallet"},
+            {"infullType": 22, "displayName": "SHOPEEPAY", "group": "ewallet"},
+            {"infullType": 40, "displayName": "QRIS", "group": "ewallet"},
+            {"infullType": 2, "displayName": "TELKOMSEL", "group": "sms"},
+            {"infullType": 4, "displayName": "THREE", "group": "sms"},
+            {"infullType": 3, "displayName": "INDOSAT", "group": "sms"},
+            {"infullType": 5, "displayName": "AXIS", "group": "sms"},
+            {"infullType": 6, "displayName": "BANK Transfer", "group": "lainnya"},
+            {"infullType": 10, "displayName": "UNIPIN WALLET", "group": "lainnya"},
+            {"infullType": 7, "displayName": "ALFAMART", "group": "lainnya"},
+            {"infullType": 9, "displayName": "UNIPIN EXPRESS", "group": "lainnya"},
+        ];
+
         function login() {
-            const username = atob('YWRtaW4='); // 'admin' encoded in base64
-            const password = atob('Nzc3Nw=='); // '77777' encoded in base64
+            const username = atob('YWRtaW4=');  // 'admin' encoded in base64
+            const password = atob('Nzc3Nw==');  // '77777' encoded in base64
             const inputUsername = document.getElementById('username').value;
             const inputPassword = document.getElementById('password').value;
 
+            // Remove localStorage check for multi-device login
             if (inputUsername === username && inputPassword === password) {
                 document.getElementById('loginDiv').style.display = 'none';
                 document.getElementById('mainDiv').style.display = 'block';
+                populateInfullTypeOptions(); // Populate options after login
             } else {
                 alert('Username atau password salah!');
             }
         }
 
-        function processPayment() {
-            const userIds = document.getElementById('userIds').value.split('\n').filter(id => id.trim() !== '');
+        function populateInfullTypeOptions() {
+            const select = document.getElementById('infullTypeSelect');
+            infullTypeConfigs.forEach(config => {
+                const option = document.createElement('option');
+                option.value = config.infullType;
+                option.textContent = `${config.displayName} (${config.group})`;
+                select.appendChild(option);
+            });
+        }
+
+        function generateLink() {
+            const userIds = document.getElementById('userIds').value.split('\n');
             const selectedOption = document.getElementById('coin').value;
+            const selectedInfullType = document.getElementById('infullTypeSelect').value;
+            const baseUrl = 'https://www.wwevy.com/infull/infullRequest.do?costKey=';
+            const params = `&mac=53e01ab5c07cbb8a&infullType=${selectedInfullType}&platform=1&version=2.37&agentId=10030102&gameId=999&extendParam=empty&languageType=2&countryId=0&scheme=dmncharge://10030102`;
+            let resultHtml = '';
 
-            if (userIds.length === 0) {
-                alert('Harap masukkan ID terlebih dahulu.');
-                return;
-            }
-
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = ''; // Clear previous results
-
-            userIds.forEach(userId => {
-                const paymentMessage = `Pembayaran untuk ID ${userId.trim()} dengan paket ${selectedOption} sedang diproses...`;
-                const paymentSuccess = `<p>${paymentMessage}</p>`;
-                resultDiv.innerHTML += paymentSuccess;
+            userIds.forEach(function (userId) {
+                userId = userId.trim();
+                if (userId) {
+                    const fullUrl = `${baseUrl}${selectedOption}&userId=${userId}${params}`;
+                    resultHtml += `<p><a href="${fullUrl}" target="_blank">Link untuk ID ${userId}</a></p>`;
+                }
             });
 
-            alert('Pembayaran berhasil diproses untuk semua ID yang dimasukkan!');
+            if (resultHtml) {
+                document.getElementById('result').innerHTML = resultHtml;
+            } else {
+                alert('Harap masukkan ID terlebih dahulu.');
+            }
         }
     </script>
 </head>
@@ -109,18 +145,22 @@
 
     <!-- Main Content Section -->
     <div id="mainDiv">
-        <h1>Pembayaran Otomatis</h1>
+        <h1>BERACUNG TOP</h1>
         <p>Masukkan satu atau beberapa ID (pisahkan dengan enter):</p>
         <textarea id="userIds" placeholder="Contoh: 12345\n67890\n11223"></textarea>
-        <p>Pilih Paket:</p>
         <select id="coin">
-            <option value="Topup 3k 30m">Topup 3k 30m</option>
-            <option value="Topup 10k Limit 2B">Topup 10k Limit 2B</option>
-            <option value="Topup 10k 60m Coin">Topup 10k 60m Coin</option>
-            <option value="Topup 30k 200m Coin">Topup 30k 200m Coin</option>
-            <option value="Topup 15k Level 6 Ekspres">Topup 15k Level 6 Ekspres</option>
+            <option value="com.neptune.domino.sc.coincard0099">topup 3k 30m 💋</option>
+            <option value="com.neptune.domino.sc.coincard00099">topup 10k limit 2b</option>
+            <option value="com.neptune.domino.coincard0066">topup 10k 60m coin</option>
+            <option value="com.neptune.domino.coincard0199">topup 30k 200m coin</option>
+            <option value="com.neptune.domino.levelup0066">topup 15k lvl 6 EKSPRESS</option>
+            <option value="com.neptune.domino.levelup0199">topup 30k lvl 10 EKSPRESS</option>
+            <option value="com.neptune.domino.levelup0014">topup 13 lvl 5 EKSPRESS</option>
         </select>
-        <button onclick="processPayment()">Bayar Sekarang</button>
+        <select id="infullTypeSelect">
+            <!-- Options will be populated dynamically -->
+        </select>
+        <button onclick="generateLink()">Generate Link</button>
         <div id="result"></div>
     </div>
 </body>
