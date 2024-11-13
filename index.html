@@ -1,0 +1,94 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+ 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Buat Tautan</title> 
+    <style> 
+        body { 
+            background-color: #000; 
+            color: #fff; 
+            font-family: 'Courier New', Courier, monospace; 
+            background-image: url('https://example.com/coin-background.png'); 
+            background-size: cover; 
+            display: flex; 
+            justify-content: center; 
+            align-items: flex-start; 
+            height: 100vh; 
+            padding-top: 50px; 
+            text-align: center; 
+        } 
+ 
+        textarea { 
+            width: 85%; 
+            height: 150px; 
+            background-color: #333; 
+            color: #FFD700; 
+            border: 1px solid #FFD700; 
+            padding: 10px; 
+            border-radius: 5px; 
+            font-size: 18px; 
+        } 
+ 
+        button { 
+            font-family: 'Comic Sans MS', cursive, sans-serif; 
+            color: #000; 
+            background-color: #FFD700; 
+            padding: 15px 30px; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 20px; 
+            cursor: pointer; 
+            margin-top: 20px; 
+        } 
+ 
+        #result p { 
+            color: #FFD700; 
+            font-weight: bold; 
+            margin: 10px 0; 
+        } 
+ 
+        h1, 
+        p { 
+            font-family: 'Arial Black', Gadget, sans-serif; 
+        } 
+    </style> 
+    <script> 
+        function generateLink() { 
+            const userIds = document.getElementById('userIds').value.split('\n'); 
+            const baseUrl = 
+                'https://www.wwevy.com/infull/infullRequest.do?costKey=com.neptune.domino.sc.coincard0099&userId='; 
+            const urlSuffix = 
+                '&mac=53e01ab5c07cbb8a&infullType=14&platform=1&version=2.37&agentId=10030102&gameId=999&extendParam=empty&languageType=2&countryId=0&scheme=dmncharge://10030102'; 
+            let resultHtml = ''; 
+ 
+            userIds.forEach(function (userId) { 
+                userId = userId.trim(); 
+                if (userId) { 
+                    const fullUrl = baseUrl + userId + urlSuffix; 
+                    resultHtml += <p>Link untuk ID ${userId} telah dibuka di tab baru</p>; 
+                    window.open(fullUrl, '_blank'); 
+                } 
+            }); 
+ 
+            if (resultHtml) { 
+                document.getElementById('result').innerHTML = resultHtml; 
+            } else { 
+                alert('Harap masukkan ID terlebih dahulu.'); 
+            } 
+        } 
+    </script> 
+</head> 
+ 
+<body> 
+    <div> 
+        <h1>Generate Dynamic Links</h1> 
+        <p>Masukkan satu atau beberapa ID (pisahkan dengan enter):</p> 
+        <textarea id="userIds" placeholder="Contoh: 12345&#10;67890&#10;11223"></textarea> 
+        <button onclick="generateLink()">Generate Link</button> 
+        <div id="result"></div> 
+    </div> 
+</body> 
+ 
+</html>
