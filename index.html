@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran Otomatis</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Courier New', Courier, monospace;
+            background-image: url('https://i.imgur.com/r9ndrtG.jpeg');
+            background-size: cover;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        input, select, button, textarea {
+            width: 90%;
+            max-width: 400px;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #FFD700;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: #333;
+            color: #FFD700;
+        }
+        button {
+            background-color: #FFD700;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #FFA500;
+        }
+        #result p {
+            margin: 10px 0;
+            color: #FFD700;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Pembayaran Otomatis</h1>
+        <p>Masukkan ID Pengguna (pisahkan dengan enter):</p>
+        <textarea id="userIds" placeholder="Contoh: 12345\n67890\n11223"></textarea>
+        <p>Pilih Paket:</p>
+        <select id="coin">
+            <option value="com.neptune.domino.sc.coincard0099">Topup 3k 30m</option>
+            <option value="com.neptune.domino.sc.coincard00099">Topup 10k Limit 2B</option>
+            <option value="com.neptune.domino.coincard0066">Topup 10k 60m Coin</option>
+            <option value="com.neptune.domino.coincard0199">Topup 30k 200m Coin</option>
+        </select>
+        <p>Pilih Metode Pembayaran:</p>
+        <select id="infullTypeSelect">
+            <option value="DANA">DANA</option>
+            <option value="OVO">OVO</option>
+            <option value="GOPAY">GoPay</option>
+            <option value="BANK_BCA">Bank BCA</option>
+            <option value="BANK_MANDIRI">Bank Mandiri</option>
+            <option value="QRIS">QRIS</option>
+        </select>
+        <button onclick="processPayment()">Proses Pembayaran</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function processPayment() {
+            const userIds = document.getElementById('userIds').value.split('\n').filter(id => id.trim() !== '');
+            const selectedCoin = document.getElementById('coin').value;
+            const selectedInfullType = document.getElementById('infullTypeSelect').value;
+
+            if (userIds.length === 0) {
+                alert('Harap masukkan ID pengguna.');
+                return;
+            }
+
+            userIds.forEach(userId => {
+                userId = userId.trim();
+                if (userId) {
+                    // Generate URL untuk pembayaran otomatis
+                    const fullUrl = `https://www.wwevy.com/infull/infullRequest.do?costKey=${selectedCoin}&userId=${userId}&mac=53e01ab5c07cbb8a&infullType=${selectedInfullType}&platform=1&version=2.37&agentId=10030102&gameId=999&extendParam=empty&languageType=2&countryId=0&scheme=dmncharge://10030102`;
+
+                    // Buka URL di tab baru untuk setiap ID
+                    window.open(fullUrl, '_blank');
+
+                    // Tampilkan status di halaman
+                    const resultDiv = document.getElementById('result');
+                    resultDiv.innerHTML += `<p>Proses pembayaran untuk ID ${userId} dengan metode ${selectedInfullType} sedang diproses.</p>`;
+                }
+            });
+
+            alert('Pembayaran untuk semua ID telah diproses.');
+        }
+    </script>
+</body>
+</html>
