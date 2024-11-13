@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran Otomatis</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        input, select, button, textarea {
+            width: 100%;
+            max-width: 400px;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #FFD700;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #FFD700;
+            color: #000;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #FFA500;
+        }
+        h1 {
+            color: #FFD700;
+        }
+        #result p {
+            color: #FFD700;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div id="mainDiv">
+        <h1>Pembayaran Otomatis</h1>
+        <p>Masukkan satu atau beberapa ID pengguna (pisahkan dengan enter):</p>
+        <textarea id="userIds" placeholder="Contoh: 12345\n67890"></textarea>
+        <p>Pilih Paket:</p>
+        <select id="coin">
+            <option value="3k_30m">Topup 3k 30m</option>
+            <option value="10k_2b">Topup 10k Limit 2B</option>
+            <option value="10k_60m">Topup 10k 60m Coin</option>
+            <option value="30k_200m">Topup 30k 200m Coin</option>
+        </select>
+        <p>Pilih Metode Pembayaran:</p>
+        <select id="paymentMethod">
+            <option value="DANA">DANA</option>
+            <option value="OVO">OVO</option>
+            <option value="GOPAY">GoPay</option>
+            <option value="BANK_BCA">Bank BCA</option>
+            <option value="BANK_MANDIRI">Bank Mandiri</option>
+            <option value="QRIS">QRIS</option>
+        </select>
+        <button onclick="processPayment()">Proses Pembayaran</button>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function processPayment() {
+            const userIds = document.getElementById('userIds').value.split('\n').filter(id => id.trim() !== '');
+            const selectedCoin = document.getElementById('coin').value;
+            const selectedPaymentMethod = document.getElementById('paymentMethod').value;
+
+            if (userIds.length === 0) {
+                alert('Harap masukkan ID pengguna.');
+                return;
+            }
+
+            // Simulasi request pembayaran
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = ''; // Bersihkan hasil sebelumnya
+
+            userIds.forEach(userId => {
+                const payload = {
+                    userId: userId.trim(),
+                    package: selectedCoin,
+                    paymentMethod: selectedPaymentMethod
+                };
+
+                // Simulasi API request
+                simulateApiRequest(payload, resultDiv);
+            });
+        }
+
+        function simulateApiRequest(payload, resultDiv) {
+            const { userId, package, paymentMethod } = payload;
+
+            // Simulasi respons sukses
+            setTimeout(() => {
+                const message = `Pembayaran untuk ID ${userId} menggunakan paket ${package} dengan metode ${paymentMethod} berhasil diproses!`;
+                resultDiv.innerHTML += `<p>${message}</p>`;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
